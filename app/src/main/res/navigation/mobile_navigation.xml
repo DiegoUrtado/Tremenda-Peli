@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_movies">
+
+    <fragment
+        android:id="@+id/navigation_movies"
+        android:name="com.diegourtado.tremendapeli.presentation.tv_shows.view.fragments.TvShowsFragment"
+        android:label="@string/title_movies"
+        tools:layout="@layout/fragment_home" />
+
+    <fragment
+        android:id="@+id/navigation_tv_shows"
+        android:name="com.diegourtado.tremendapeli.presentation.movies.view.fragments.MoviesFragment"
+        android:label="@string/title_tv_shows"
+        tools:layout="@layout/fragment_dashboard" />
+
+
+</navigation>
