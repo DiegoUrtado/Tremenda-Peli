@@ -16,6 +16,11 @@
 
         </activity>
 
+
+        <activity android:name=".presentation.movies.view.MovieDetailActivity">
+
+        </activity>
+
         <activity android:name=".presentation.tv_shows.view.TvShowsActivity">
 
         </activity>

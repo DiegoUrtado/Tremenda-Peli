@@ -7,7 +7,7 @@ import com.diegourtado.tremendapeli.R
 import com.diegourtado.tremendapeli.data.remote.ResultsItemMovies
 
 
-class MoviesListAdapter constructor(dataType: Int) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class MoviesListAdapter constructor(dataType: Int, private val clickListener: (ResultsItemMovies) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var listOfMovies = mutableListOf<ResultsItemMovies>()
     private var currentPage = 1
@@ -17,26 +17,8 @@ class MoviesListAdapter constructor(dataType: Int) : RecyclerView.Adapter<Recycl
         this.dataType = dataType
     }
 
-    var itemClick: ((String) -> Unit)? = null
-
-
-
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return MovieListViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_movie, parent, false)).apply {
-//            itemClick = { movieTitle ->
-//                this@MovieListAdapter.itemClick?.invoke(movieTitle)
-//            }
-//
-//            onItemLongPress = { movieModel ->
-//                this@MovieListAdapter.onItemLongPress?.invoke(movieModel)
-//            }
-
-            itemView.setOnClickListener {
-               // this@MovieListAdapter.recyclerViewCallback?.onRecycleViewItemClick(listOfMovies[adapterPosition], adapterPosition)
-            }
-
-        }
+        return MovieListViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_movie, parent, false))
     }
 
     fun getNextPage(): Int {
@@ -56,6 +38,9 @@ class MoviesListAdapter constructor(dataType: Int) : RecyclerView.Adapter<Recycl
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val movieViewHolder = viewHolder as MovieListViewHolder
+        viewHolder.itemView.setOnClickListener{
+            clickListener(listOfMovies[position])
+        }
         movieViewHolder.bindView(listOfMovies[position])
     }
 
@@ -68,9 +53,5 @@ class MoviesListAdapter constructor(dataType: Int) : RecyclerView.Adapter<Recycl
         this.listOfMovies.addAll(listOfMovies)
         notifyDataSetChanged()
     }
-
-    //TODO fun setOnCallbackListener(recyclerViewCallback: RecyclerViewCallback) {
-    //    this.recyclerViewCallback = recyclerViewCallback
-    //}
 
 }

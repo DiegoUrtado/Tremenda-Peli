@@ -3,6 +3,7 @@ package com.diegourtado.tremendapeli.presentation.movies.presenter
 import com.diegourtado.tremendapeli.base.BasePresenter
 import com.diegourtado.tremendapeli.data.cache.ImageCache
 import com.diegourtado.tremendapeli.data.cache.ImageCacheImpl
+import com.diegourtado.tremendapeli.data.remote.MovieDetailsResponse
 import com.diegourtado.tremendapeli.data.remote.ResultsItemMovies
 import com.diegourtado.tremendapeli.interactor.MoviesInteractor
 import com.diegourtado.tremendapeli.presentation.movies.MoviesContract
@@ -18,6 +19,23 @@ class MoviesPresenter constructor(view : MoviesContract.View, moviesInteractor :
         this.view = view
         this.moviesInteractor = moviesInteractor
         this.cache = cache
+    }
+
+    override fun fetchMovieDetail(id: Int) {
+        view?.showProgressBar()
+
+        moviesInteractor?.getMovieDetailFromRemote(id, object : MoviesInteractor.OnMovieDetailFetched{
+            override fun onSuccess(response : MovieDetailsResponse) {
+                view?.hideProgressBar()
+                view?.showMovies()
+                view?.onFetchMovieDetailSuccess(response)
+            }
+
+            override fun onFailure() {
+                view?.hideProgressBar()
+                view?.showDataFetchError()
+            }
+        })
     }
 
     override fun fetchMoviesData(type: Int) {
