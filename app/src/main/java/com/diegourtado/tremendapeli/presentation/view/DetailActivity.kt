@@ -97,11 +97,23 @@ class DetailActivity : BaseActivity<ItemPresenter> (), Contract.View{
         TODO("Not yet implemented")
     }
 
-    override fun onFetchMoreDataSuccess(type: Int, movies: List<ResultsItemMovies>) {
+    override fun onFetchMoreDataMoviesSuccess(isPopular: Boolean, movies: List<ResultsItemMovies>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onFetchMoreDataTvShowsSuccess(isPopular: Boolean, movies: List<ResultsItemTvShows>) {
         TODO("Not yet implemented")
     }
 
     override fun showMoreDataFetchError(type: Int) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSearchMovieSuccess(movies: List<ResultsItemMovies>) {
+        TODO("Not yet implemented")
+    }
+
+    override fun onSearchTvShowsSuccess(movies: List<ResultsItemTvShows>) {
         TODO("Not yet implemented")
     }
 

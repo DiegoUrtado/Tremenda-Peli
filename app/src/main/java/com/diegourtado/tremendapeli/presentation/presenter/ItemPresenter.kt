@@ -4,6 +4,7 @@ import android.provider.SyncStateContract
 import com.diegourtado.tremendapeli.base.BasePresenter
 import com.diegourtado.tremendapeli.data.remote.MoviesSingleResponse
 import com.diegourtado.tremendapeli.data.remote.ResultsItemMovies
+import com.diegourtado.tremendapeli.data.remote.ResultsItemTvShows
 import com.diegourtado.tremendapeli.data.remote.TvShowsSingleResponse
 import com.diegourtado.tremendapeli.interactor.Interactor
 import com.diegourtado.tremendapeli.presentation.Contract
@@ -62,11 +63,11 @@ class ItemPresenter constructor(view : Contract.View, interactor : Interactor) :
         })
     }
 
-    override fun fetchData(type: Int) {
+    override fun fetchDataMovies(isPopular: Boolean) {
         view?.hideList()
         view?.showProgressBar()
 
-        interactor?.getMoviesDataFromRemote(type, 1, object : Interactor.OnMoviesListFetched{
+        interactor?.getMoviesDataFromRemote(isPopular, 1, object : Interactor.OnMoviesListFetched{
             override fun onSuccess(results : List<ResultsItemMovies>) {
                 view?.hideProgressBar()
                 view?.showList()
@@ -80,13 +81,13 @@ class ItemPresenter constructor(view : Contract.View, interactor : Interactor) :
         })
     }
 
-    override fun fetchMoreData(type: Int, page: Int) {
+    override fun fetchMoreDataMovies(isPopular: Boolean, page: Int) {
         view?.showProgressBar()
 
-        interactor?.getMoviesDataFromRemote(type, page, object : Interactor.OnMoviesListFetched{
+        interactor?.getMoviesDataFromRemote(isPopular, page, object : Interactor.OnMoviesListFetched{
             override fun onSuccess(results : List<ResultsItemMovies>) {
                 view?.hideProgressBar()
-                view?.onFetchMoreDataSuccess(type, results)
+                view?.onFetchMoreDataMoviesSuccess(isPopular, results)
             }
 
             override fun onFailure() {
@@ -94,5 +95,59 @@ class ItemPresenter constructor(view : Contract.View, interactor : Interactor) :
                 view?.showDataFetchError()
             }
         })
+    }
+
+    override fun fetchDataTvShow(isPopular: Boolean) {
+        view?.hideList()
+        view?.showProgressBar()
+
+        interactor?.getTvShowsDataFromRemote(isPopular, 1, object : Interactor.OnTvShowsListFetched{
+            override fun onSuccess(results : List<ResultsItemTvShows>) {
+                view?.hideProgressBar()
+                view?.showList()
+                view?.onFetchTvShowsSuccess(results)
+            }
+
+            override fun onFailure() {
+                view?.hideProgressBar()
+                view?.showDataFetchError()
+            }
+        })
+    }
+
+    override fun fetchMoreDataTvShow(isPopular: Boolean, page: Int) {
+        view?.showProgressBar()
+
+        interactor?.getTvShowsDataFromRemote(isPopular, page, object : Interactor.OnTvShowsListFetched{
+            override fun onSuccess(results : List<ResultsItemTvShows>) {
+                view?.hideProgressBar()
+                view?.onFetchMoreDataTvShowsSuccess(isPopular, results)
+            }
+
+            override fun onFailure() {
+                view?.hideProgressBar()
+                view?.showDataFetchError()
+            }
+        })
+    }
+
+    override fun searchMovies(query: String) {
+        view?.showProgressBar()
+        interactor?.searchMoviesFromRemote(query, object : Interactor.OnMoviesListFetched{
+            override fun onSuccess(results : List<ResultsItemMovies>) {
+                view?.hideProgressBar()
+                view?.onSearchMovieSuccess(results)
+            }
+
+            override fun onFailure() {
+                view?.hideProgressBar()
+                view?.showDataFetchError()
+            }
+        })
+
+    }
+
+    override fun searchTvShows(query: String) {
+        view?.showProgressBar()
     }
 }

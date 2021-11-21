@@ -20,20 +20,27 @@ interface ApiService {
         @Query("page") PAGE: Int?
     ): Call<MoviesListResponse>
 
+    @GET("search/movie")
+    fun searchMovies(@Query("query") query: String, @Query("api_key") API_KEY: String
+    ): Call<MoviesListResponse>
+
     @GET("movie/{movie_id}/videos")
     fun getMovieDetail(@Path("movie_id") movieId: Int, @Query("api_key") API_KEY: String
     ): Call<MoviesSingleResponse>
 
-    @GET("discover/tv_show")
+
+    @GET("discover/tv")
     fun getTvShowsData(
         @Query("api_key") API_KEY: String,
         @Query("sort_by") SORT_BY: String?,
         @Query("page") PAGE: Int?
     ): Call<TvShowsListResponse>
 
-    @GET("tv_shows/{tv_show_id}/videos")
+    @GET("tv/{tv_show_id}/videos")
     fun getTvShowDetail(@Path("tv_show_id") tvShowId: Int, @Query("api_key") API_KEY: String
     ): Call<TvShowsSingleResponse>
+
+
 
 
 

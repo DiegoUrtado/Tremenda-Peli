@@ -34,7 +34,7 @@ class Interactor {
         fun onFailure()
     }
 
-    fun getMoviesDataFromRemote(type: Int, page: Int, listener: OnMoviesListFetched){
+    fun getMoviesDataFromRemote(isPopular: Boolean, page: Int, listener: OnMoviesListFetched){
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -42,9 +42,9 @@ class Interactor {
 
         val service = retrofit.create(ApiService::class.java)
 
-        var sort = Constants.SORT_POPULAR
-        if (type == Constants.TYPE_MOVIES_TOP_RATED){
-            sort = Constants.SORT_TOP_RATED
+        var sort = Constants.SORT_TOP_RATED
+        if (isPopular){
+            sort = Constants.SORT_POPULAR
         }
 
         service.getMoviesData(Constants.API_KEY, sort, page)
@@ -84,7 +84,7 @@ class Interactor {
     }
 
 
-    fun getTvShowsDataFromRemote(type: Int, page: Int, listener: OnMoviesListFetched){
+    fun getTvShowsDataFromRemote(isPopular: Boolean, page: Int, listener: OnTvShowsListFetched){
         val retrofit = Retrofit.Builder()
             .baseUrl(BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
@@ -92,19 +92,19 @@ class Interactor {
 
         val service = retrofit.create(ApiService::class.java)
 
-        var sort = Constants.SORT_POPULAR
-        if (type == Constants.TYPE_TV_SHOWS_TOP_RATED){
-            sort = Constants.SORT_TOP_RATED
+        var sort = Constants.SORT_TOP_RATED
+        if (isPopular){
+            sort = Constants.SORT_POPULAR
         }
 
-        service.getMoviesData(Constants.API_KEY, sort, page)
-            .enqueue(object : Callback<MoviesListResponse> {
-                override fun onResponse(call: Call<MoviesListResponse>, response: Response<MoviesListResponse>) {
+        service.getTvShowsData(Constants.API_KEY, sort, page)
+            .enqueue(object : Callback<TvShowsListResponse> {
+                override fun onResponse(call: Call<TvShowsListResponse>, response: Response<TvShowsListResponse>) {
                     println("---response:"+response.raw())
-                    listener.onSuccess((response.body()!!.results as List<ResultsItemMovies>?)!!)
+                    listener.onSuccess((response.body()!!.results as List<ResultsItemTvShows>?)!!)
                 }
 
-                override fun onFailure(call: Call<MoviesListResponse>, t: Throwable) {
+                override fun onFailure(call: Call<TvShowsListResponse>, t: Throwable) {
                     println("onFailure")
                 }
             })
@@ -132,5 +132,28 @@ class Interactor {
                 }
             })
     }
+
+    fun searchMoviesFromRemote(query: String, listener: OnMoviesListFetched){
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val service = retrofit.create(ApiService::class.java)
+
+
+        service.searchMovies(query, Constants.API_KEY)
+            .enqueue(object : Callback<MoviesListResponse> {
+                override fun onResponse(call: Call<MoviesListResponse>, response: Response<MoviesListResponse>) {
+                    println("---response:"+response.raw())
+                    listener.onSuccess((response.body()!!.results as List<ResultsItemMovies>?)!!)
+                }
+
+                override fun onFailure(call: Call<MoviesListResponse>, t: Throwable) {
+                    println("onFailure")
+                }
+            })
+    }
+
 
 }

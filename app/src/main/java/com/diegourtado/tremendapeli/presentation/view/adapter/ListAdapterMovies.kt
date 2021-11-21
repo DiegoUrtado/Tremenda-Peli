@@ -8,36 +8,36 @@ import com.diegourtado.tremendapeli.data.remote.ResultsItemMovies
 import com.diegourtado.tremendapeli.utils.Constants
 
 
-class ListAdapterMovies constructor(dataType: Int, private val clickListener: (ResultsItemMovies) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ListAdapterMovies constructor(private val clickListener: (ResultsItemMovies) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var list = mutableListOf<ResultsItemMovies>()
     private var listOfPopularMovies = mutableListOf<ResultsItemMovies>()
     private var listOfTopRatedMovies = mutableListOf<ResultsItemMovies>()
+    private var listSearchMovies = mutableListOf<ResultsItemMovies>()
 
     private var currentPagePopular = 1
     private var currentPageTopRated = 1
-    private var dataType = Constants.TYPE_MOVIES_POPULAR
-
-    init {
-        this.dataType = dataType
-    }
+    private var currentPageSearch = 1
+    private var popularSelected = false
+    private var searching = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ListViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_movie, parent, false))
     }
 
     fun getNextPage(): Int {
-        when (this.dataType) {
-            Constants.TYPE_MOVIES_POPULAR -> return getNextPagePopular()
-            Constants.TYPE_MOVIES_POPULAR -> return getNextPageTopRated()
+        return if (isPopularSelected()){
+            getNextPagePopular()
+        }else{
+            getNextPageTopRated()
         }
-        return getNextPagePopular()
     }
 
     fun pageBack() {
-        when (this.dataType) {
-            Constants.TYPE_MOVIES_POPULAR -> pageBackPopular()
-            Constants.TYPE_MOVIES_TOP_RATED -> pageBackTopRated()
+
+        return if (isPopularSelected()){
+            pageBackPopular()
+        }else{
+            pageBackTopRated()
         }
     }
 
@@ -59,47 +59,76 @@ class ListAdapterMovies constructor(dataType: Int, private val clickListener: (R
         this.currentPageTopRated = this.currentPageTopRated - 1
     }
 
-    fun setDataType(dataType: Int){
-        this.dataType = dataType
-    }
-    fun getDataType(): Int {
-        return this.dataType
+    private fun getNextPageSearch(): Int {
+        this.currentPageSearch = this.currentPageSearch + 1
+        return this.currentPageSearch
     }
 
-    fun changeList(){
-        when (this.dataType) {
-            Constants.TYPE_MOVIES_POPULAR -> list = listOfPopularMovies
-            Constants.TYPE_MOVIES_TOP_RATED -> list = listOfTopRatedMovies
+    private fun pageBackSearch() {
+        this.currentPageSearch = this.currentPageSearch - 1
+    }
+
+    fun setSearching(searching: Boolean){
+        this.searching = searching
+    }
+    fun isSearching(): Boolean {
+        return this.searching
+    }
+
+    fun setPopularSelected(popularSelected: Boolean){
+        this.popularSelected = popularSelected
+    }
+    fun isPopularSelected(): Boolean {
+        return this.popularSelected
+    }
+
+    private fun getList() : List<ResultsItemMovies> {
+        return if (isSearching()){
+            listSearchMovies
+        }else{
+            if (isPopularSelected()) {
+                listOfPopularMovies
+            }else{
+                listOfTopRatedMovies
+            }
         }
-        this.notifyDataSetChanged()
+
     }
 
-    override fun getItemCount(): Int = list.size
+    override fun getItemCount(): Int = getList().size
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val moviesViewHolder = viewHolder as ListViewHolder
         viewHolder.itemView.setOnClickListener{
-            clickListener(list[position])
+            clickListener(getList()[position])
         }
-        moviesViewHolder.bindView(list[position])
+        moviesViewHolder.bindView(getList()[position])
     }
 
     fun setList(list: List<ResultsItemMovies>) {
-        if(this.dataType == Constants.TYPE_MOVIES_POPULAR){
-            listOfPopularMovies = list.toMutableList()
+        if (isSearching()){
+            listSearchMovies = list.toMutableList()
         }else{
-            listOfTopRatedMovies = list.toMutableList()
+            if(isPopularSelected()){
+                listOfPopularMovies = list.toMutableList()
+            }else{
+                listOfTopRatedMovies = list.toMutableList()
+            }
         }
-        changeList()
+
+        this.notifyDataSetChanged()
     }
 
     fun addMoreData(list: List<ResultsItemMovies>) {
-        if(this.dataType == Constants.TYPE_MOVIES_POPULAR){
-            this.listOfPopularMovies.addAll(list)
+        if (isSearching()){
+            listSearchMovies.addAll(list)
         }else{
-            this.listOfTopRatedMovies.addAll(list)
+            if(isPopularSelected()){
+                this.listOfPopularMovies.addAll(list)
+            }else{
+                this.listOfTopRatedMovies.addAll(list)
+            }
         }
-        changeList()
+        this.notifyDataSetChanged()
     }
-
 }

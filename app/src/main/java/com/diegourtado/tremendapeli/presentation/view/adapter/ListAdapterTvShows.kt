@@ -4,41 +4,40 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.diegourtado.tremendapeli.R
+import com.diegourtado.tremendapeli.data.remote.ResultsItemMovies
 import com.diegourtado.tremendapeli.data.remote.ResultsItemTvShows
 import com.diegourtado.tremendapeli.utils.Constants
 
-class ListAdapterTvShows constructor(dataType: Int, private val clickListener: (ResultsItemTvShows) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ListAdapterTvShows constructor(private val clickListener: (ResultsItemTvShows) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var list = mutableListOf<ResultsItemTvShows>()
     private var listOfPopularTvShows = mutableListOf<ResultsItemTvShows>()
     private var listOfTopRatedTvShows = mutableListOf<ResultsItemTvShows>()
 
     private var currentPagePopular = 1
     private var currentPageTopRated = 1
-    private var dataType = Constants.TYPE_TV_SHOWS_POPULAR
+    private var popularSelected = false
 
-    init {
-        this.dataType = dataType
-    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ListViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_tv_show, parent, false))
     }
 
     fun getNextPage(): Int {
-        when (this.dataType) {
-            Constants.TYPE_TV_SHOWS_POPULAR -> return getNextPagePopular()
-            Constants.TYPE_TV_SHOWS_TOP_RATED -> return getNextPageTopRated()
+        return if (isPopularSelected()){
+            getNextPagePopular()
+        }else{
+            getNextPageTopRated()
         }
-        return getNextPagePopular()
     }
 
     fun pageBack() {
-        when (this.dataType) {
-            Constants.TYPE_TV_SHOWS_POPULAR -> pageBackPopular()
-            Constants.TYPE_TV_SHOWS_TOP_RATED -> pageBackTopRated()
+        return if (isPopularSelected()){
+            pageBackPopular()
+        }else{
+            pageBackTopRated()
         }
     }
+
 
     private fun getNextPagePopular(): Int {
         this.currentPagePopular = this.currentPagePopular + 1
@@ -58,47 +57,55 @@ class ListAdapterTvShows constructor(dataType: Int, private val clickListener: (
         this.currentPageTopRated = this.currentPageTopRated - 1
     }
 
-    fun setDataType(dataType: Int){
-        this.dataType = dataType
+    fun setPopularSelected(popularSelected: Boolean){
+        this.popularSelected = popularSelected
     }
-    fun getDataType(): Int {
-        return this.dataType
+    fun isPopularSelected(): Boolean {
+        return this.popularSelected
     }
 
     fun changeList(){
-        when (this.dataType) {
-            Constants.TYPE_TV_SHOWS_POPULAR -> list = listOfPopularTvShows
-            Constants.TYPE_TV_SHOWS_TOP_RATED -> list = listOfTopRatedTvShows
-        }
+        setList(getList())
         this.notifyDataSetChanged()
     }
 
-    override fun getItemCount(): Int = list.size
+    private fun getList() : List<ResultsItemTvShows> {
+        return if (isPopularSelected()) {
+            listOfPopularTvShows
+        }else{
+            listOfTopRatedTvShows
+        }
+    }
+
+
+
+
+    override fun getItemCount(): Int = getList().size
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, position: Int) {
         val tvShowsViewHolder = viewHolder as ListViewHolder
         viewHolder.itemView.setOnClickListener{
-            clickListener(list[position])
+            clickListener(getList()[position])
         }
-        tvShowsViewHolder.bindView(list[position])
+        tvShowsViewHolder.bindView(getList()[position])
     }
 
     fun setList(list: List<ResultsItemTvShows>) {
-        if(this.dataType == Constants.TYPE_TV_SHOWS_POPULAR){
+        if(isPopularSelected()){
             listOfPopularTvShows = list.toMutableList()
         }else{
             listOfTopRatedTvShows = list.toMutableList()
         }
-        changeList()
+        this.notifyDataSetChanged()
     }
 
     fun addMoreData(list: List<ResultsItemTvShows>) {
-        if(this.dataType == Constants.TYPE_TV_SHOWS_POPULAR){
+        if(isPopularSelected()){
             this.listOfPopularTvShows.addAll(list)
         }else{
             this.listOfTopRatedTvShows.addAll(list)
         }
-        changeList()
+        this.notifyDataSetChanged()
     }
 
 }

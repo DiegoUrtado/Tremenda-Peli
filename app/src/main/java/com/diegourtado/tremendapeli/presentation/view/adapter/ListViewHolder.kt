@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.list_item_movie.view.*
 class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
     fun bindView(movie: ResultsItemMovies) {
-        itemView.tv_rating.text = "" + movie.voteAverage
+        itemView.tv_rating.text = movie.voteAverage.toString()
         itemView.tv_title.text = movie.title
         itemView.tv_date.text = movie.releaseDate
         Glide.with(itemView.context).load(Constants.URL_IMAGES + movie.posterPath).into(itemView.iv_movie)
@@ -23,7 +23,7 @@ class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
 
     fun bindView(tvShow: ResultsItemTvShows) {
-        itemView.tv_rating.text = "" + tvShow.voteAverage
+        itemView.tv_rating.text = tvShow.voteAverage.toString()
         itemView.tv_title.text = tvShow.name
         itemView.tv_date.text = tvShow.firstAirDate
         Glide.with(itemView.context).load(Constants.URL_IMAGES + tvShow.posterPath).into(itemView.iv_movie)
