@@ -10,10 +10,12 @@ object Constants {
     const val URL_IMAGES = "https://image.tmdb.org/t/p/w500/"
     const val URL_POSTER = "https://image.tmdb.org/t/p/w780/"
 
-    const val TYPE_TOP_RATED = 0
-    const val TYPE_POPULAR = 1
+    const val TYPE_MOVIES_TOP_RATED = 0
+    const val TYPE_MOVIES_POPULAR = 1
+    const val TYPE_TV_SHOWS_TOP_RATED = 2
+    const val TYPE_TV_SHOWS_POPULAR = 3
 
-
+    const val KEY_TYPE: String = "type"
     const val KEY_ID: String = "id"
     const val KEY_BACKDROP_PATH: String = "backdropPath"
     const val KEY_POSTER_PATH: String = "posterPath"

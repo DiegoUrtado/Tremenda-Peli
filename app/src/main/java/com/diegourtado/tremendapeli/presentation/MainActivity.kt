@@ -1,13 +1,13 @@
 package com.diegourtado.tremendapeli.presentation
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.view.WindowManager
 import androidx.appcompat.app.AppCompatActivity
 import com.diegourtado.tremendapeli.R
-import com.diegourtado.tremendapeli.presentation.movies.view.MoviesActivity
-import com.diegourtado.tremendapeli.presentation.tv_shows.view.TvShowsActivity
+import com.diegourtado.tremendapeli.presentation.view.ListActivity
+import com.diegourtado.tremendapeli.utils.Constants
 import com.diegourtado.tremendapeli.utils.Util
 
 
@@ -20,11 +20,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun clickMovies(view: View){
-        startActivity(Intent(this, MoviesActivity::class.java))
+        launchActivity(Constants.TYPE_MOVIES_POPULAR)
     }
 
     fun clickTvShows(view: View){
-        startActivity(Intent(this, TvShowsActivity::class.java))
+        launchActivity(Constants.TYPE_TV_SHOWS_POPULAR)
+    }
+
+    private fun launchActivity(viewType: Int){
+        val intent = Intent(this, ListActivity::class.java)
+        when (viewType){
+            Constants.TYPE_MOVIES_POPULAR -> intent.putExtra(Constants.KEY_TYPE, Constants.TYPE_MOVIES_POPULAR)
+            Constants.TYPE_TV_SHOWS_POPULAR -> intent.putExtra(Constants.KEY_TYPE, Constants.TYPE_TV_SHOWS_POPULAR)
+            else -> return
+        }
+        startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(this).toBundle())
     }
 
 }

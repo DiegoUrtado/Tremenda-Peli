@@ -12,12 +12,12 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".presentation.movies.view.MoviesActivity">
+        <activity android:name=".presentation.view.ListActivity">
 
         </activity>
 
 
-        <activity android:name=".presentation.movies.view.MovieDetailActivity">
+        <activity android:name=".presentation.view.DetailActivity">
 
         </activity>
 

@@ -6,34 +6,65 @@
     android:layout_height="match_parent"
     android:background="@color/background">
 
-    <TextView
-        android:id="@+id/title"
+    <LinearLayout
+        android:id="@+id/title_container"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
+        android:layout_height="50dp"
         android:layout_marginTop="60dp"
-        android:layout_marginBottom="30dp"
+        android:layout_marginBottom="15dp"
+        android:gravity="center_vertical">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="30dp"
+            android:layout_marginEnd="30dp"
+            android:fontFamily="@font/montserrat_thin"
+            android:textSize="28sp"
+            android:textColor="@color/font_dark"
+            android:text="@string/title_movies"/>
+
+    </LinearLayout>
+
+
+    <androidx.cardview.widget.CardView
+        android:id="@+id/card_search"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
         android:layout_marginEnd="30dp"
-        android:fontFamily="@font/montserrat_thin"
-        android:textSize="28sp"
-        android:textColor="@color/colorPrimary"
-        android:text="@string/title_movies"/>
+        android:layout_marginStart="30dp"
+        android:layout_marginBottom="4dp"
+        android:layout_below="@id/title_container"
+        app:cardCornerRadius="25dp"
+        app:cardElevation="0dp"
+        app:cardBackgroundColor="@color/search_background">
+
+        <androidx.appcompat.widget.SearchView
+            android:id="@+id/et_search"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"/>
+
+    </androidx.cardview.widget.CardView>
+
 
     <View
         android:layout_width="100dp"
         android:layout_height="50dp"
         android:background="@color/light_grey"
         android:layout_centerHorizontal="true"
-        android:layout_below="@id/title"/>
+        android:layout_below="@id/card_search"
+        android:layout_marginTop="15dp"/>
+
 
     <LinearLayout
         android:id="@+id/buttons_container"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/title"
+        android:layout_below="@id/card_search"
         android:weightSum="2"
-        android:layout_marginStart="30dp"
-        android:layout_marginEnd="30dp"
+        android:layout_marginStart="15dp"
+        android:layout_marginEnd="15dp"
         android:orientation="horizontal">
 
 
@@ -41,21 +72,25 @@
             android:id="@+id/card_top_rated"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:onClick="clickMovies"
-            app:cardBackgroundColor="@color/font_dark"
+            android:layout_marginStart="15dp"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="15dp"
+            android:onClick="clickTopRated"
+            app:cardBackgroundColor="@color/colorPrimary"
             app:cardCornerRadius="8dp"
             app:cardPreventCornerOverlap="false"
             android:layout_weight="1"
-            app:cardElevation="30dp">
+            app:cardElevation="10dp">
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
                 <TextView
+                    android:id="@+id/tv_top_rated"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_black"
+                    android:fontFamily="@font/montserrat_bold"
                     android:text="@string/top_rated"
                     android:layout_centerInParent="true"
                     android:textSize="16sp"
@@ -68,11 +103,13 @@
             android:id="@+id/card_popular"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:onClick="clickMovies"
+            android:onClick="clickPopular"
             app:cardBackgroundColor="@color/light_grey"
             app:cardCornerRadius="8dp"
             app:cardPreventCornerOverlap="false"
             android:layout_weight="1"
+            android:layout_marginTop="15dp"
+            android:layout_marginEnd="15dp"
             app:cardElevation="0dp">
 
             <RelativeLayout
@@ -80,9 +117,10 @@
                 android:layout_height="match_parent">
 
                 <TextView
+                    android:id="@+id/tv_popular"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/montserrat_black"
+                    android:fontFamily="@font/montserrat_bold"
                     android:text="@string/popular"
                     android:layout_centerInParent="true"
                     android:textSize="16sp"
@@ -94,39 +132,18 @@
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rv_movies_popular"
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/buttons_container"
-        android:layout_margin="30dp"
+        android:layout_marginBottom="30dp"
+        android:layout_marginTop="12dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:layout_below="@id/title"
-        android:weightSum="2">
-
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rv_movies_top_rated"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:layout_margin="8dp"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
-
-    </LinearLayout>
-
-
     <ProgressBar
-        android:id="@+id/pb_movies"
+        android:id="@+id/progress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true" />
-
 
 </RelativeLayout>

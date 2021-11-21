@@ -4,9 +4,12 @@
     <color name="colorPrimaryLight">#fef1c6</color>
     <color name="colorPrimaryDark">#A3A60C</color>
     <color name="colorAccent">#41EAD4</color>
-    <color name="font_dark">#fda229</color>
-    <color name="background">#020202</color>
-    <color name="grey">#707070</color>
+    <color name="font_dark">#111111</color>
+    <color name="background">#ffffff</color>
+    <color name="grey">#8d8d8d</color>
     <color name="light_grey">#c7c7c7</color>
+    <color name="search_background">#eeeeee</color>
+    <color name="white">#ffffff</color>
+    <color name="black_trans">#cc000000</color>
 
 </resources>
