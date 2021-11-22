@@ -25,19 +25,26 @@ class ListAdapterMovies constructor(private val clickListener: (ResultsItemMovie
     }
 
     fun getNextPage(): Int {
-        return if (isPopularSelected()){
-            getNextPagePopular()
+        return if (isSearching()){
+            getNextPageSearch()
         }else{
-            getNextPageTopRated()
+            if (isPopularSelected()){
+                getNextPagePopular()
+            }else{
+                getNextPageTopRated()
+            }
         }
     }
 
     fun pageBack() {
-
-        return if (isPopularSelected()){
-            pageBackPopular()
+        return if (isSearching()){
+            pageBackSearch()
         }else{
-            pageBackTopRated()
+            if (isPopularSelected()){
+                pageBackPopular()
+            }else{
+                pageBackTopRated()
+            }
         }
     }
 
@@ -92,7 +99,6 @@ class ListAdapterMovies constructor(private val clickListener: (ResultsItemMovie
                 listOfTopRatedMovies
             }
         }
-
     }
 
     override fun getItemCount(): Int = getList().size
@@ -115,7 +121,6 @@ class ListAdapterMovies constructor(private val clickListener: (ResultsItemMovie
                 listOfTopRatedMovies = list.toMutableList()
             }
         }
-
         this.notifyDataSetChanged()
     }
 

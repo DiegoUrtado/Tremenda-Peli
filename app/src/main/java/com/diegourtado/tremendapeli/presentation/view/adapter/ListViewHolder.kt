@@ -1,12 +1,10 @@
 package com.diegourtado.tremendapeli.presentation.view.adapter
 
 import android.view.View
-import android.view.ViewGroup
-import android.view.ViewParent
-import android.widget.AdapterView
+import android.view.animation.AnimationUtils
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.bumptech.glide.Glide.init
+import com.diegourtado.tremendapeli.R
 import com.diegourtado.tremendapeli.data.remote.ResultsItemMovies
 import com.diegourtado.tremendapeli.data.remote.ResultsItemTvShows
 import com.diegourtado.tremendapeli.utils.Constants
@@ -19,6 +17,8 @@ class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.tv_title.text = movie.title
         itemView.tv_date.text = movie.releaseDate
         Glide.with(itemView.context).load(Constants.URL_IMAGES + movie.posterPath).into(itemView.iv_movie)
+        itemView.animation = AnimationUtils.loadAnimation(itemView.context, R.anim.rotate)
+        itemView.animate()
     }
 
 
@@ -27,6 +27,8 @@ class ListViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         itemView.tv_title.text = tvShow.name
         itemView.tv_date.text = tvShow.firstAirDate
         Glide.with(itemView.context).load(Constants.URL_IMAGES + tvShow.posterPath).into(itemView.iv_movie)
+        itemView.animation = AnimationUtils.loadAnimation(itemView.context, R.anim.rotate)
+        itemView.animate()
     }
 
 }

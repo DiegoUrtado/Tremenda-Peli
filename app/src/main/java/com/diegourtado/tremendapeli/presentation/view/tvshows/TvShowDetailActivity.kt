@@ -1,4 +1,4 @@
-package com.diegourtado.tremendapeli.presentation.view
+package com.diegourtado.tremendapeli.presentation.view.tvshows
 
 import android.content.Context
 import android.os.Bundle
@@ -10,7 +10,9 @@ import com.diegourtado.tremendapeli.base.BaseActivity
 import com.diegourtado.tremendapeli.data.remote.*
 import com.diegourtado.tremendapeli.interactor.Interactor
 import com.diegourtado.tremendapeli.presentation.Contract
-import com.diegourtado.tremendapeli.presentation.presenter.ItemPresenter
+import com.diegourtado.tremendapeli.presentation.presenter.MoviesPresenter
+import com.diegourtado.tremendapeli.presentation.presenter.TvShowDetailPresenter
+import com.diegourtado.tremendapeli.presentation.presenter.TvShowsPresenter
 import com.diegourtado.tremendapeli.utils.Constants
 import com.diegourtado.tremendapeli.utils.Util
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer
@@ -18,13 +20,12 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.Abs
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
 
 
-class DetailActivity : BaseActivity<ItemPresenter> (), Contract.View{
+class TvShowDetailActivity : BaseActivity<TvShowDetailPresenter> (), Contract.TvShowDetailView{
 
-    override fun createPresenter(context: Context): ItemPresenter {
-        return ItemPresenter(this, Interactor())
+    override fun createPresenter(context: Context): TvShowDetailPresenter {
+        return TvShowDetailPresenter(this, Interactor())
     }
 
-    private var type: Int = 0
     private var id: Int = 0
     private var backdropPath: String = ""
     private var posterPath: String = ""
@@ -40,13 +41,16 @@ class DetailActivity : BaseActivity<ItemPresenter> (), Contract.View{
 
         youTubePlayerView = findViewById(R.id.youtube_player_view)
 
-        this.type = intent.getIntExtra(Constants.KEY_TYPE, 0)
         this.id = intent.getIntExtra(Constants.KEY_ID, 0)
         this.backdropPath = intent.getStringExtra(Constants.KEY_BACKDROP_PATH).toString()
         this.posterPath = intent.getStringExtra(Constants.KEY_POSTER_PATH).toString()
         this.releaseDate = intent.getStringExtra(Constants.KEY_RELEASE_DATE).toString()
         this.title = intent.getStringExtra(Constants.KEY_TITLE).toString()
-        presenter.fetchDetail(this.type, this.id)
+
+        Glide.with(this).load(Constants.URL_POSTER + this.posterPath).into(findViewById(R.id.iv_poster))
+
+        presenter.fetchDetail(this.id)
+
     }
 
     override fun showProgressBar() {
@@ -57,24 +61,7 @@ class DetailActivity : BaseActivity<ItemPresenter> (), Contract.View{
         findViewById<ProgressBar>(R.id.pb_movies).visibility = View.GONE
     }
 
-    override fun hideList() {
-        TODO("Not yet implemented")
-    }
-
-    override fun showList() {
-        TODO("Not yet implemented")
-    }
-
-    override fun onFetchMoviesSuccess(movies: List<ResultsItemMovies>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onFetchTvShowsSuccess(movies: List<ResultsItemTvShows>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onFetchDetailMovieSuccess(response: MovieResultItem) {
-        Glide.with(this).load(Constants.URL_POSTER + this.posterPath).into(findViewById(R.id.iv_poster))
+    override fun onFetchDetailTvShowSuccess(response: TvShowResultItem) {
         youTubePlayerView.initialize(object : AbstractYouTubePlayerListener() {
             override fun onReady(youTubePlayer: YouTubePlayer) {
                 super.onReady(youTubePlayer)
@@ -82,39 +69,18 @@ class DetailActivity : BaseActivity<ItemPresenter> (), Contract.View{
                     youTubePlayerView.visibility = View.VISIBLE
                     youTubePlayer.loadVideo(response.key!!,0f)
                 }else{
-                    //TODO
                     youTubePlayerView.visibility = View.GONE
                 }
             }
         })
     }
 
-    override fun onFetchDetailTvShowSuccess(response: TvShowsSingleResponse) {
-        TODO("Not yet implemented")
-    }
-
     override fun showDataFetchError() {
-        TODO("Not yet implemented")
+        Util.showErrorDialog(this)
     }
 
-    override fun onFetchMoreDataMoviesSuccess(isPopular: Boolean, movies: List<ResultsItemMovies>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onFetchMoreDataTvShowsSuccess(isPopular: Boolean, movies: List<ResultsItemTvShows>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun showMoreDataFetchError(type: Int) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onSearchMovieSuccess(movies: List<ResultsItemMovies>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onSearchTvShowsSuccess(movies: List<ResultsItemTvShows>) {
-        TODO("Not yet implemented")
+    override fun showNoDataError() {
+        youTubePlayerView.visibility = View.GONE
     }
 
 }

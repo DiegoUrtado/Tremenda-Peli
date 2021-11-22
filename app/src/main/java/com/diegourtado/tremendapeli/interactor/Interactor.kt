@@ -13,7 +13,6 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class Interactor {
 
-
     interface OnMoviesListFetched {
         fun onSuccess(results : List<ResultsItemMovies>)
         fun onFailure()
@@ -55,7 +54,7 @@ class Interactor {
                 }
 
                 override fun onFailure(call: Call<MoviesListResponse>, t: Throwable) {
-                    println("onFailure")
+                    listener.onFailure()
                 }
             })
     }
@@ -78,7 +77,7 @@ class Interactor {
                 }
 
                 override fun onFailure(call: Call<MoviesSingleResponse>, t: Throwable) {
-                    println("onFailure")
+                    listener.onFailure()
                 }
             })
     }
@@ -105,7 +104,7 @@ class Interactor {
                 }
 
                 override fun onFailure(call: Call<TvShowsListResponse>, t: Throwable) {
-                    println("onFailure")
+                    listener.onFailure()
                 }
             })
     }
@@ -128,7 +127,7 @@ class Interactor {
                 }
 
                 override fun onFailure(call: Call<TvShowsSingleResponse>, t: Throwable) {
-                    println("onFailure")
+                    listener.onFailure()
                 }
             })
     }
@@ -150,10 +149,30 @@ class Interactor {
                 }
 
                 override fun onFailure(call: Call<MoviesListResponse>, t: Throwable) {
-                    println("onFailure")
+                    listener.onFailure()
                 }
             })
     }
 
+    fun searchTvShowsFromRemote(query: String, listener: OnTvShowsListFetched){
+        val retrofit = Retrofit.Builder()
+            .baseUrl(BASE_URL)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
+        val service = retrofit.create(ApiService::class.java)
+
+
+        service.searchTvShows(query, Constants.API_KEY)
+            .enqueue(object : Callback<TvShowsListResponse> {
+                override fun onResponse(call: Call<TvShowsListResponse>, response: Response<TvShowsListResponse>) {
+                    println("---response:"+response.raw())
+                    listener.onSuccess((response.body()!!.results as List<ResultsItemTvShows>?)!!)
+                }
+
+                override fun onFailure(call: Call<TvShowsListResponse>, t: Throwable) {
+                    listener.onFailure()
+                }
+            })
+    }
 }

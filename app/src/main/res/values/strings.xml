@@ -5,4 +5,7 @@
     <string name="top_rated">Top Rated</string>
     <string name="popular">Popular</string>
     <string name="search_hint">Movies, TV Shows, Actors</string>
+    <string name="error">Error</string>
+    <string name="error_loading_data">Error loading data</string>
+    <string name="done">DONE</string>
 </resources>

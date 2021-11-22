@@ -36,6 +36,10 @@ interface ApiService {
         @Query("page") PAGE: Int?
     ): Call<TvShowsListResponse>
 
+    @GET("search/tv")
+    fun searchTvShows(@Query("query") query: String, @Query("api_key") API_KEY: String
+    ): Call<TvShowsListResponse>
+
     @GET("tv/{tv_show_id}/videos")
     fun getTvShowDetail(@Path("tv_show_id") tvShowId: Int, @Query("api_key") API_KEY: String
     ): Call<TvShowsSingleResponse>

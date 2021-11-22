@@ -1,4 +1,4 @@
-package com.diegourtado.tremendapeli.presentation.view
+package com.diegourtado.tremendapeli.presentation.view.tvshows
 
 import android.content.Context
 import android.content.Intent
@@ -15,21 +15,17 @@ import com.diegourtado.tremendapeli.base.BaseActivity
 import com.diegourtado.tremendapeli.data.remote.*
 import com.diegourtado.tremendapeli.interactor.Interactor
 import com.diegourtado.tremendapeli.presentation.Contract
-import com.diegourtado.tremendapeli.presentation.presenter.ItemPresenter
-import com.diegourtado.tremendapeli.presentation.view.adapter.ListAdapterMovies
+import com.diegourtado.tremendapeli.presentation.presenter.MoviesPresenter
+import com.diegourtado.tremendapeli.presentation.presenter.TvShowsPresenter
+import com.diegourtado.tremendapeli.presentation.view.movies.MovieDetailActivity
 import com.diegourtado.tremendapeli.presentation.view.adapter.ListAdapterTvShows
 import com.diegourtado.tremendapeli.utils.Animations
 import com.diegourtado.tremendapeli.utils.Constants
 import com.diegourtado.tremendapeli.utils.Util
 
-class ListActivity : BaseActivity<ItemPresenter>() , Contract.View {
+class TvShowsListActivity : BaseActivity<TvShowsPresenter>() , Contract.TvShowsView {
 
-    private var dataType = -1
-
-    private var popularSelected = true
-
-    lateinit var adapterMovies: ListAdapterMovies
-    lateinit var adapterTvShows: ListAdapterTvShows
+    lateinit var adapter: ListAdapterTvShows
 
     lateinit var cardPopular: CardView
     lateinit var tvPopular: TextView
@@ -39,16 +35,15 @@ class ListActivity : BaseActivity<ItemPresenter>() , Contract.View {
 
     lateinit var etSearch: SearchView
 
-    override fun createPresenter(context: Context) : ItemPresenter {
-        return ItemPresenter(this, Interactor())
+    override fun createPresenter(context: Context) : TvShowsPresenter {
+        return TvShowsPresenter(this, Interactor())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         Util.hideStatusBar(window)
-        dataType = intent.getIntExtra(Constants.KEY_TYPE, Constants.TYPE_MOVIES_POPULAR)
         setContentView(R.layout.activity_list)
-
+        findViewById<TextView>(R.id.title).setText(R.string.title_tv_shows)
         initRecyclerView()
         initButtons()
         setupSearch()
@@ -56,32 +51,40 @@ class ListActivity : BaseActivity<ItemPresenter>() , Contract.View {
     }
 
     private fun fetchData(){
-        if (dataType == Constants.TYPE_MOVIES_POPULAR || dataType == Constants.TYPE_MOVIES_TOP_RATED){
-            presenter.fetchData(Constants.TYPE_MOVIES_POPULAR)
-            presenter.fetchData(Constants.TYPE_MOVIES_TOP_RATED)
-        }else{
-            presenter.fetchData(Constants.TYPE_TV_SHOWS_POPULAR)
-            presenter.fetchData(Constants.TYPE_TV_SHOWS_TOP_RATED)
-        }
+        presenter.fetchDataTvShow(true)
+        presenter.fetchDataTvShow(false)
     }
 
     private fun setupSearch(){
         etSearch = findViewById(R.id.et_search)
         etSearch.setOnCloseListener {
-            Animations.fadeIn(findViewById(R.id.buttons_container))
+            Animations.fadeIn(findViewById(R.id.list_container))
             false
         }
         etSearch.setOnSearchClickListener{
             clickSearch()
         }
+        etSearch.setOnQueryTextListener(object : SearchView.OnQueryTextListener,
+            android.widget.SearchView.OnQueryTextListener {
 
+            override fun onQueryTextChange(qString: String): Boolean {
+                return true
+            }
+            override fun onQueryTextSubmit(query: String): Boolean {
+                etSearch.clearFocus()
+                search(query)
+                return true
+            }
+        })
     }
 
-
+    private fun search(query: String){
+        adapter.setSearching(true)
+        presenter.searchTvShows(query)
+    }
 
     private fun clickSearch(){
-
-        Animations.fadeOut(findViewById(R.id.buttons_container))
+        Animations.fadeOut(findViewById(R.id.list_container))
     }
 
     private fun initButtons(){
@@ -101,18 +104,21 @@ class ListActivity : BaseActivity<ItemPresenter>() , Contract.View {
     }
 
     private fun updateSelection(popularSelected: Boolean){
-        this.popularSelected = popularSelected
+        adapter.setPopularSelected(popularSelected)
+        adapter.setSearching(false)
+        etSearch.setQuery("", false)
+        etSearch.clearFocus()
+        etSearch.isIconified = true
         updateButtons()
         updateAdapter()
     }
 
     private fun updateAdapter(){
-        adapter.setDataType(this.dataType)
-        adapter.changeList()
+        adapter.notifyDataSetChanged()
     }
 
     private fun updateButtons(){
-        if (popularSelected) {
+        if (adapter.isPopularSelected()) {
             cardPopular.setCardBackgroundColor(resources.getColor(R.color.colorPrimary, null))
             cardTopRated.setCardBackgroundColor(resources.getColor(R.color.light_grey, null))
             cardPopular.cardElevation = 10f
@@ -130,44 +136,19 @@ class ListActivity : BaseActivity<ItemPresenter>() , Contract.View {
     }
 
     private fun initRecyclerView() {
-
         createAdapter()
-
-        if (dataType == Constants.TYPE_MOVIES_POPULAR || dataType == Constants.TYPE_MOVIES_TOP_RATED){
-            setUpAdapter(this.adapterMovies, R.id.recycler_view)
-        } else {
-            setUpAdapter(this.adapterTvShows, R.id.recycler_view)
-        }
+        setUpAdapter(this.adapter, R.id.recycler_view)
     }
 
     private fun createAdapter(){
-        if (this.dataType == Constants.TYPE_MOVIES_POPULAR || this.dataType == Constants.TYPE_MOVIES_TOP_RATED){
-            this.adapterMovies = ListAdapterMovies(Constants.TYPE_MOVIES_TOP_RATED) { movie ->
-                showMovie(movie)
-            }
-        }else{
-            this.adapterTvShows = ListAdapterTvShows(Constants.TYPE_MOVIES_TOP_RATED) { tvShow ->
-                showTvShow(tvShow)
-            }
+        this.adapter = ListAdapterTvShows() { tvShow ->
+            showTvShow(tvShow)
         }
+        adapter.setPopularSelected(false)
     }
-
-    private fun showMovie(movie: ResultsItemMovies){
-        val i = Intent(this, DetailActivity::class.java)
-        i.putExtra( Constants.KEY_TYPE, this.dataType)
-        i.putExtra( Constants.KEY_ID, movie.id)
-        i.putExtra(Constants.KEY_BACKDROP_PATH, movie.backdropPath)
-        i.putExtra(Constants.KEY_POSTER_PATH, movie.posterPath)
-        i.putExtra(Constants.KEY_RELEASE_DATE, movie.releaseDate)
-        i.putExtra(Constants.KEY_TITLE, movie.title)
-        i.putExtra(Constants.KEY_VOTE_AVERAGE, movie.voteAverage)
-        startActivity(i)
-    }
-
 
     private fun showTvShow(tvShow: ResultsItemTvShows){
-        val i = Intent(this, DetailActivity::class.java)
-        i.putExtra( Constants.KEY_TYPE, this.dataType)
+        val i = Intent(this, TvShowDetailActivity::class.java)
         i.putExtra( Constants.KEY_ID, tvShow.id)
         i.putExtra(Constants.KEY_BACKDROP_PATH, tvShow.backdropPath)
         i.putExtra(Constants.KEY_POSTER_PATH, tvShow.posterPath)
@@ -177,7 +158,7 @@ class ListActivity : BaseActivity<ItemPresenter>() , Contract.View {
         startActivity(i)
     }
 
-    private fun setUpAdapter(adapter: RecyclerView.Adapter<RecyclerView.ViewHolder>, id: Int){
+    private fun setUpAdapter(adapter: ListAdapterTvShows, id: Int){
         findViewById<RecyclerView>(id).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             this.adapter = adapter
@@ -187,18 +168,10 @@ class ListActivity : BaseActivity<ItemPresenter>() , Contract.View {
                 {
                     super.onScrolled(recyclerView, dx, dy)
                     if (!recyclerView.canScrollVertically(1)) {
-                        presenter.fetchMoreData(dataType, getAdapter().getNextPage())
+                        presenter.fetchMoreDataTvShow(adapter.isPopularSelected(), adapter.getNextPage())
                     }
                 }
             })
-        }
-    }
-
-    private fun getAdapter() : RecyclerView.Adapter<RecyclerView.ViewHolder> {
-        if (this.dataType == Constants.TYPE_MOVIES_POPULAR || this.dataType == Constants.TYPE_MOVIES_TOP_RATED){
-            return this.adapterMovies
-        }else{
-            return this.adapterTvShows
         }
     }
 
@@ -218,33 +191,26 @@ class ListActivity : BaseActivity<ItemPresenter>() , Contract.View {
         findViewById<RecyclerView>(R.id.recycler_view).visibility = View.VISIBLE
     }
 
-    override fun onFetchMoviesSuccess(movies: List<ResultsItemMovies>) {
-        this.adapter.setMovieList(movies)
+    override fun onFetchTvShowsSuccess(tvShows: List<ResultsItemTvShows>) {
+        adapter.setList(tvShows)
     }
 
-    override fun onFetchTvShowsSuccess(movies: List<ResultsItemTvShows>) {
-        TODO("Not yet implemented")
+    override fun showDataFetchError() {
+        Util.showErrorDialog(this)
     }
 
-    override fun onFetchDetailMovieSuccess(response: MovieResultItem) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onFetchDetailTvShowSuccess(response: TvShowsSingleResponse) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onFetchMoreDataSuccess(type: Int, movies: List<ResultsItemMovies>) {
+    override fun onFetchMoreDataTvShowsSuccess(isPopularSelected: Boolean, movies: List<ResultsItemTvShows>) {
         this.adapter.addMoreData(movies)
         this.adapter.notifyDataSetChanged()
     }
 
-    override fun showDataFetchError() {
-        println("---showDataERROR")
-    }
-
     override fun showMoreDataFetchError(type: Int) {
         adapter.pageBack()
+    }
+
+    override fun onSearchTvShowsSuccess(tvShows: List<ResultsItemTvShows>) {
+        adapter.setList(tvShows)
+        Animations.fadeIn(findViewById(R.id.list_container))
     }
 
 }

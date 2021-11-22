@@ -11,5 +11,7 @@
     <color name="search_background">#eeeeee</color>
     <color name="white">#ffffff</color>
     <color name="black_trans">#cc000000</color>
+    <color name="red_400">#F44336</color>
+    <color name="red_100">#FFF6C0BC</color>
 
 </resources>

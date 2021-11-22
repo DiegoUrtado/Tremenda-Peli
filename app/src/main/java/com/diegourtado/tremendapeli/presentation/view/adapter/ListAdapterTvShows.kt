@@ -4,40 +4,47 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.diegourtado.tremendapeli.R
-import com.diegourtado.tremendapeli.data.remote.ResultsItemMovies
 import com.diegourtado.tremendapeli.data.remote.ResultsItemTvShows
-import com.diegourtado.tremendapeli.utils.Constants
 
 class ListAdapterTvShows constructor(private val clickListener: (ResultsItemTvShows) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var listOfPopularTvShows = mutableListOf<ResultsItemTvShows>()
     private var listOfTopRatedTvShows = mutableListOf<ResultsItemTvShows>()
+    private var listSearchTvShows = mutableListOf<ResultsItemTvShows>()
 
     private var currentPagePopular = 1
     private var currentPageTopRated = 1
+    private var currentPageSearch = 1
     private var popularSelected = false
-
+    private var searching = false
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return ListViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.list_item_tv_show, parent, false))
     }
 
     fun getNextPage(): Int {
-        return if (isPopularSelected()){
-            getNextPagePopular()
+        return if (isSearching()){
+            getNextPageSearch()
         }else{
-            getNextPageTopRated()
+            if (isPopularSelected()){
+                getNextPagePopular()
+            }else{
+                getNextPageTopRated()
+            }
         }
     }
 
     fun pageBack() {
-        return if (isPopularSelected()){
-            pageBackPopular()
+        return if (isSearching()){
+            pageBackSearch()
         }else{
-            pageBackTopRated()
+            if (isPopularSelected()){
+                pageBackPopular()
+            }else{
+                pageBackTopRated()
+            }
         }
     }
-
 
     private fun getNextPagePopular(): Int {
         this.currentPagePopular = this.currentPagePopular + 1
@@ -57,6 +64,22 @@ class ListAdapterTvShows constructor(private val clickListener: (ResultsItemTvSh
         this.currentPageTopRated = this.currentPageTopRated - 1
     }
 
+    private fun getNextPageSearch(): Int {
+        this.currentPageSearch = this.currentPageSearch + 1
+        return this.currentPageSearch
+    }
+
+    private fun pageBackSearch() {
+        this.currentPageSearch = this.currentPageSearch - 1
+    }
+
+    fun setSearching(searching: Boolean){
+        this.searching = searching
+    }
+    fun isSearching(): Boolean {
+        return this.searching
+    }
+
     fun setPopularSelected(popularSelected: Boolean){
         this.popularSelected = popularSelected
     }
@@ -64,21 +87,17 @@ class ListAdapterTvShows constructor(private val clickListener: (ResultsItemTvSh
         return this.popularSelected
     }
 
-    fun changeList(){
-        setList(getList())
-        this.notifyDataSetChanged()
-    }
-
     private fun getList() : List<ResultsItemTvShows> {
-        return if (isPopularSelected()) {
-            listOfPopularTvShows
+        return if (isSearching()){
+            listSearchTvShows
         }else{
-            listOfTopRatedTvShows
+            if (isPopularSelected()) {
+                listOfPopularTvShows
+            }else{
+                listOfTopRatedTvShows
+            }
         }
     }
-
-
-
 
     override fun getItemCount(): Int = getList().size
 
@@ -91,19 +110,27 @@ class ListAdapterTvShows constructor(private val clickListener: (ResultsItemTvSh
     }
 
     fun setList(list: List<ResultsItemTvShows>) {
-        if(isPopularSelected()){
-            listOfPopularTvShows = list.toMutableList()
+        if (isSearching()){
+            listSearchTvShows = list.toMutableList()
         }else{
-            listOfTopRatedTvShows = list.toMutableList()
+            if(isPopularSelected()){
+                listOfPopularTvShows = list.toMutableList()
+            }else{
+                listOfTopRatedTvShows = list.toMutableList()
+            }
         }
         this.notifyDataSetChanged()
     }
 
     fun addMoreData(list: List<ResultsItemTvShows>) {
-        if(isPopularSelected()){
-            this.listOfPopularTvShows.addAll(list)
+        if (isSearching()){
+            listSearchTvShows.addAll(list)
         }else{
-            this.listOfTopRatedTvShows.addAll(list)
+            if(isPopularSelected()){
+                this.listOfPopularTvShows.addAll(list)
+            }else{
+                this.listOfTopRatedTvShows.addAll(list)
+            }
         }
         this.notifyDataSetChanged()
     }

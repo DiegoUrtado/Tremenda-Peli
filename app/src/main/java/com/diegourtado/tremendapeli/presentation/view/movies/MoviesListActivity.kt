@@ -15,15 +15,13 @@ import com.diegourtado.tremendapeli.base.BaseActivity
 import com.diegourtado.tremendapeli.data.remote.*
 import com.diegourtado.tremendapeli.interactor.Interactor
 import com.diegourtado.tremendapeli.presentation.Contract
-import com.diegourtado.tremendapeli.presentation.presenter.ItemPresenter
-import com.diegourtado.tremendapeli.presentation.view.DetailActivity
+import com.diegourtado.tremendapeli.presentation.presenter.MoviesPresenter
 import com.diegourtado.tremendapeli.presentation.view.adapter.ListAdapterMovies
-import com.diegourtado.tremendapeli.presentation.view.adapter.ListAdapterTvShows
 import com.diegourtado.tremendapeli.utils.Animations
 import com.diegourtado.tremendapeli.utils.Constants
 import com.diegourtado.tremendapeli.utils.Util
 
-class MoviesListActivity : BaseActivity<ItemPresenter>() , Contract.View {
+class MoviesListActivity : BaseActivity<MoviesPresenter>() , Contract.MoviesView {
 
     lateinit var adapter: ListAdapterMovies
 
@@ -35,13 +33,13 @@ class MoviesListActivity : BaseActivity<ItemPresenter>() , Contract.View {
 
     lateinit var etSearch: SearchView
 
-    override fun createPresenter(context: Context) : ItemPresenter {
-        return ItemPresenter(this, Interactor())
+    override fun createPresenter(context: Context) : MoviesPresenter {
+        return MoviesPresenter(this, Interactor())
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Util.hideStatusBar(window)
+        Util.statusBarColor(R.color.white, this)
         setContentView(R.layout.activity_list)
         findViewById<TextView>(R.id.title).setText(R.string.title_movies)
         initRecyclerView()
@@ -76,10 +74,7 @@ class MoviesListActivity : BaseActivity<ItemPresenter>() , Contract.View {
                 return true
             }
         })
-
-
     }
-
 
     private fun search(query: String){
         adapter.setSearching(true)
@@ -151,7 +146,7 @@ class MoviesListActivity : BaseActivity<ItemPresenter>() , Contract.View {
     }
 
     private fun showMovie(movie: ResultsItemMovies){
-        val i = Intent(this, DetailActivity::class.java)
+        val i = Intent(this, MovieDetailActivity::class.java)
         i.putExtra( Constants.KEY_ID, movie.id)
         i.putExtra(Constants.KEY_BACKDROP_PATH, movie.backdropPath)
         i.putExtra(Constants.KEY_POSTER_PATH, movie.posterPath)
@@ -198,29 +193,13 @@ class MoviesListActivity : BaseActivity<ItemPresenter>() , Contract.View {
         adapter.setList(movies)
     }
 
-    override fun onFetchTvShowsSuccess(movies: List<ResultsItemTvShows>) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onFetchDetailMovieSuccess(response: MovieResultItem) {
-        TODO("Not yet implemented")
-    }
-
-    override fun onFetchDetailTvShowSuccess(response: TvShowsSingleResponse) {
-        TODO("Not yet implemented")
-    }
-
     override fun showDataFetchError() {
-        println("---showDataERROR")
+        Util.showErrorDialog(this)
     }
 
     override fun onFetchMoreDataMoviesSuccess(isPopular: Boolean, movies: List<ResultsItemMovies>) {
         this.adapter.addMoreData(movies)
         this.adapter.notifyDataSetChanged()
-    }
-
-    override fun onFetchMoreDataTvShowsSuccess(isPopular: Boolean, movies: List<ResultsItemTvShows>) {
-        TODO("Not yet implemented")
     }
 
     override fun showMoreDataFetchError(type: Int) {
@@ -230,10 +209,6 @@ class MoviesListActivity : BaseActivity<ItemPresenter>() , Contract.View {
     override fun onSearchMovieSuccess(movies: List<ResultsItemMovies>) {
         adapter.setList(movies)
         Animations.fadeIn(findViewById(R.id.list_container))
-    }
-
-    override fun onSearchTvShowsSuccess(movies: List<ResultsItemTvShows>) {
-        TODO("Not yet implemented")
     }
 
 }
