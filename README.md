@@ -13,6 +13,6 @@ Integración de la API themoviedb.org con MVP
 
 ### Implementación a futuro
 
-- [] Inyección de dependencias con Dagger HILT
-- [] Base de datos local con ROOM para el modo Sin conexión
-- [] Pruebas unitarias
+- [ ] Inyección de dependencias con Dagger HILT
+- [ ] Base de datos local con ROOM para el modo Sin conexión
+- [ ] Pruebas unitarias
