@@ -44,7 +44,7 @@ interface Contract {
 
         fun showMoreDataFetchError(type: Int)
 
-        fun onSearchTvShowsSuccess(movies: List<ResultsItemTvShows>)
+        fun onSearchTvShowsSuccess(tvShows: List<ResultsItemTvShows>)
 
     }
 

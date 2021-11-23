@@ -12,7 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.diegourtado.tremendapeli.R
 import com.diegourtado.tremendapeli.base.BaseActivity
-import com.diegourtado.tremendapeli.data.remote.*
+import com.diegourtado.tremendapeli.data.remote.ResultsItemMovies
 import com.diegourtado.tremendapeli.interactor.Interactor
 import com.diegourtado.tremendapeli.presentation.Contract
 import com.diegourtado.tremendapeli.presentation.presenter.MoviesPresenter
@@ -135,11 +135,11 @@ class MoviesListActivity : BaseActivity<MoviesPresenter>() , Contract.MoviesView
 
     private fun initRecyclerView() {
         createAdapter()
-        setUpAdapter(this.adapter, R.id.recycler_view)
+        setUpAdapter(this.adapter)
     }
 
     private fun createAdapter(){
-        this.adapter = ListAdapterMovies() { movie ->
+        this.adapter = ListAdapterMovies { movie ->
             showMovie(movie)
         }
         adapter.setPopularSelected(false)
@@ -156,8 +156,8 @@ class MoviesListActivity : BaseActivity<MoviesPresenter>() , Contract.MoviesView
         startActivity(i)
     }
 
-    private fun setUpAdapter(adapter: ListAdapterMovies, id: Int){
-        findViewById<RecyclerView>(id).apply {
+    private fun setUpAdapter(adapter: ListAdapterMovies){
+        findViewById<RecyclerView>(R.id.recycler_view).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             this.adapter = adapter
             this.addOnScrollListener(object : RecyclerView.OnScrollListener()

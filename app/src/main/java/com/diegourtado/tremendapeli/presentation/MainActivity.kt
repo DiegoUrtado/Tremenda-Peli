@@ -1,6 +1,5 @@
 package com.diegourtado.tremendapeli.presentation
 
-import android.app.Activity
 import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
@@ -9,7 +8,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.diegourtado.tremendapeli.R
 import com.diegourtado.tremendapeli.presentation.view.movies.MoviesListActivity
 import com.diegourtado.tremendapeli.presentation.view.tvshows.TvShowsListActivity
-import com.diegourtado.tremendapeli.utils.Constants
 import com.diegourtado.tremendapeli.utils.Util
 
 

@@ -1,14 +1,9 @@
 package com.diegourtado.tremendapeli.presentation.presenter
 
-import android.provider.SyncStateContract
 import com.diegourtado.tremendapeli.base.BasePresenter
-import com.diegourtado.tremendapeli.data.remote.MoviesSingleResponse
 import com.diegourtado.tremendapeli.data.remote.ResultsItemMovies
-import com.diegourtado.tremendapeli.data.remote.ResultsItemTvShows
-import com.diegourtado.tremendapeli.data.remote.TvShowsSingleResponse
 import com.diegourtado.tremendapeli.interactor.Interactor
 import com.diegourtado.tremendapeli.presentation.Contract
-import com.diegourtado.tremendapeli.utils.Constants
 
 class MoviesPresenter constructor(view : Contract.MoviesView, interactor : Interactor) : BasePresenter(), Contract.PresenterMovies {
 

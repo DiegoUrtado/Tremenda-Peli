@@ -21,12 +21,11 @@ class MovieDetailPresenter constructor(view : Contract.MovieDetailView, interact
         interactor?.getMovieDetailFromRemote(id, object : Interactor.OnMovieDetailFetched{
             override fun onSuccess(response : MoviesSingleResponse) {
                 view?.hideProgressBar()
-                if(response.results!!.size > 0){
-                    view?.onFetchDetailMovieSuccess(response!!.results!![0]!!)
+                if(response.results!!.isNotEmpty()){
+                    view?.onFetchDetailMovieSuccess(response.results[0]!!)
                 }else{
                     view?.showNoDataError()
                 }
-
             }
 
             override fun onFailure() {

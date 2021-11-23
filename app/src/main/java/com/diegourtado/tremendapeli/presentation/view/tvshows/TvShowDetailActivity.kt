@@ -7,12 +7,10 @@ import android.widget.ProgressBar
 import com.bumptech.glide.Glide
 import com.diegourtado.tremendapeli.R
 import com.diegourtado.tremendapeli.base.BaseActivity
-import com.diegourtado.tremendapeli.data.remote.*
+import com.diegourtado.tremendapeli.data.remote.TvShowResultItem
 import com.diegourtado.tremendapeli.interactor.Interactor
 import com.diegourtado.tremendapeli.presentation.Contract
-import com.diegourtado.tremendapeli.presentation.presenter.MoviesPresenter
 import com.diegourtado.tremendapeli.presentation.presenter.TvShowDetailPresenter
-import com.diegourtado.tremendapeli.presentation.presenter.TvShowsPresenter
 import com.diegourtado.tremendapeli.utils.Constants
 import com.diegourtado.tremendapeli.utils.Util
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer

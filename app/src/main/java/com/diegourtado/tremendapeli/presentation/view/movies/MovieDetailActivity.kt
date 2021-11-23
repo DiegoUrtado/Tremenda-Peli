@@ -66,7 +66,6 @@ class MovieDetailActivity : BaseActivity<MovieDetailPresenter> (), Contract.Movi
                     youTubePlayerView.visibility = View.VISIBLE
                     youTubePlayer.loadVideo(response.key!!,0f)
                 }else{
-                    //TODO
                     youTubePlayerView.visibility = View.GONE
                 }
             }

@@ -76,7 +76,7 @@ class ListAdapterTvShows constructor(private val clickListener: (ResultsItemTvSh
     fun setSearching(searching: Boolean){
         this.searching = searching
     }
-    fun isSearching(): Boolean {
+    private fun isSearching(): Boolean {
         return this.searching
     }
 

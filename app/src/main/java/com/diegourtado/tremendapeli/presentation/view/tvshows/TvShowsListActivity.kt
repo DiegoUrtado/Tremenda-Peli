@@ -12,12 +12,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.diegourtado.tremendapeli.R
 import com.diegourtado.tremendapeli.base.BaseActivity
-import com.diegourtado.tremendapeli.data.remote.*
+import com.diegourtado.tremendapeli.data.remote.ResultsItemTvShows
 import com.diegourtado.tremendapeli.interactor.Interactor
 import com.diegourtado.tremendapeli.presentation.Contract
-import com.diegourtado.tremendapeli.presentation.presenter.MoviesPresenter
 import com.diegourtado.tremendapeli.presentation.presenter.TvShowsPresenter
-import com.diegourtado.tremendapeli.presentation.view.movies.MovieDetailActivity
 import com.diegourtado.tremendapeli.presentation.view.adapter.ListAdapterTvShows
 import com.diegourtado.tremendapeli.utils.Animations
 import com.diegourtado.tremendapeli.utils.Constants
@@ -137,7 +135,7 @@ class TvShowsListActivity : BaseActivity<TvShowsPresenter>() , Contract.TvShowsV
 
     private fun initRecyclerView() {
         createAdapter()
-        setUpAdapter(this.adapter, R.id.recycler_view)
+        setUpAdapter(this.adapter)
     }
 
     private fun createAdapter(){
@@ -158,8 +156,8 @@ class TvShowsListActivity : BaseActivity<TvShowsPresenter>() , Contract.TvShowsV
         startActivity(i)
     }
 
-    private fun setUpAdapter(adapter: ListAdapterTvShows, id: Int){
-        findViewById<RecyclerView>(id).apply {
+    private fun setUpAdapter(adapter: ListAdapterTvShows){
+        findViewById<RecyclerView>(R.id.recycler_view).apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             this.adapter = adapter
             this.addOnScrollListener(object : RecyclerView.OnScrollListener()
@@ -199,8 +197,8 @@ class TvShowsListActivity : BaseActivity<TvShowsPresenter>() , Contract.TvShowsV
         Util.showErrorDialog(this)
     }
 
-    override fun onFetchMoreDataTvShowsSuccess(isPopularSelected: Boolean, movies: List<ResultsItemTvShows>) {
-        this.adapter.addMoreData(movies)
+    override fun onFetchMoreDataTvShowsSuccess(isPopular: Boolean, tvShows: List<ResultsItemTvShows>) {
+        this.adapter.addMoreData(tvShows)
         this.adapter.notifyDataSetChanged()
     }
 

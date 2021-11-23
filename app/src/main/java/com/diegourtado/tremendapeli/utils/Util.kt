@@ -40,7 +40,5 @@ class Util {
             dialog.show()
             dialog.window!!.attributes = lp
         }
-
-
     }
 }

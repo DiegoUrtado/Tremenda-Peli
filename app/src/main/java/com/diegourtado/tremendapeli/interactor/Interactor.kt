@@ -19,7 +19,7 @@ class Interactor {
     }
 
     interface OnMovieDetailFetched {
-        fun onSuccess(result : MoviesSingleResponse)
+        fun onSuccess(response : MoviesSingleResponse)
         fun onFailure()
     }
 
@@ -29,7 +29,7 @@ class Interactor {
     }
 
     interface OnTvShowDetailFetched {
-        fun onSuccess(result : TvShowsSingleResponse)
+        fun onSuccess(response : TvShowsSingleResponse)
         fun onFailure()
     }
 
@@ -49,7 +49,6 @@ class Interactor {
         service.getMoviesData(Constants.API_KEY, sort, page)
             .enqueue(object : Callback<MoviesListResponse> {
                 override fun onResponse(call: Call<MoviesListResponse>, response: Response<MoviesListResponse>) {
-                    println("---response:"+response.raw())
                     listener.onSuccess((response.body()!!.results as List<ResultsItemMovies>?)!!)
                 }
 
@@ -72,7 +71,6 @@ class Interactor {
         service.getMovieDetail(id, Constants.API_KEY)
             .enqueue(object : Callback<MoviesSingleResponse> {
                 override fun onResponse(call: Call<MoviesSingleResponse>, response: Response<MoviesSingleResponse>) {
-                    println("---response:"+response.raw())
                     listener.onSuccess((response.body()!! as MoviesSingleResponse?)!!)
                 }
 
@@ -99,7 +97,6 @@ class Interactor {
         service.getTvShowsData(Constants.API_KEY, sort, page)
             .enqueue(object : Callback<TvShowsListResponse> {
                 override fun onResponse(call: Call<TvShowsListResponse>, response: Response<TvShowsListResponse>) {
-                    println("---response:"+response.raw())
                     listener.onSuccess((response.body()!!.results as List<ResultsItemTvShows>?)!!)
                 }
 
@@ -122,7 +119,6 @@ class Interactor {
         service.getTvShowDetail(id, Constants.API_KEY)
             .enqueue(object : Callback<TvShowsSingleResponse> {
                 override fun onResponse(call: Call<TvShowsSingleResponse>, response: Response<TvShowsSingleResponse>) {
-                    println("---response:"+response.raw())
                     listener.onSuccess((response.body()!! as TvShowsSingleResponse?)!!)
                 }
 
@@ -144,7 +140,6 @@ class Interactor {
         service.searchMovies(query, Constants.API_KEY)
             .enqueue(object : Callback<MoviesListResponse> {
                 override fun onResponse(call: Call<MoviesListResponse>, response: Response<MoviesListResponse>) {
-                    println("---response:"+response.raw())
                     listener.onSuccess((response.body()!!.results as List<ResultsItemMovies>?)!!)
                 }
 
@@ -162,11 +157,9 @@ class Interactor {
 
         val service = retrofit.create(ApiService::class.java)
 
-
         service.searchTvShows(query, Constants.API_KEY)
             .enqueue(object : Callback<TvShowsListResponse> {
                 override fun onResponse(call: Call<TvShowsListResponse>, response: Response<TvShowsListResponse>) {
-                    println("---response:"+response.raw())
                     listener.onSuccess((response.body()!!.results as List<ResultsItemTvShows>?)!!)
                 }
 

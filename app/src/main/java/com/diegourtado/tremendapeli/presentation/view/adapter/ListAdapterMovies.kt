@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.diegourtado.tremendapeli.R
 import com.diegourtado.tremendapeli.data.remote.ResultsItemMovies
-import com.diegourtado.tremendapeli.utils.Constants
 
 
 class ListAdapterMovies constructor(private val clickListener: (ResultsItemMovies) -> Unit) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -78,7 +77,7 @@ class ListAdapterMovies constructor(private val clickListener: (ResultsItemMovie
     fun setSearching(searching: Boolean){
         this.searching = searching
     }
-    fun isSearching(): Boolean {
+    private fun isSearching(): Boolean {
         return this.searching
     }
 

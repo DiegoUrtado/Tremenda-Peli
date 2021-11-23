@@ -62,7 +62,5 @@ dependencies {
 
     implementation 'com.beust:klaxon:5.5'
 
-    implementation 'androidx.room:room-ktx:2.2.5'
-    kapt 'androidx.room:room-compiler:2.2.5'
 
 }
